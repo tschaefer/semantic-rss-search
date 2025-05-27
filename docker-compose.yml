@@ -1,0 +1,14 @@
+---
+services:
+  rss-search-app:
+    container_name: semantic-rss-search
+    image: ghcr.io/tschaefer/semantic-rss-search:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./models:/app/models
+      - ./db:/app/db
+    environment:
+      - SEMANTIC_RSS_SEARCH_HOST=0.0.0.0
+      - SEMANTIC_RSS_SEARCH_PORT=3000
+    restart: unless-stopped

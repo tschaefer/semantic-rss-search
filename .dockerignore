@@ -1,0 +1,6 @@
+db/
+models/
+tests/
+venv/
+setup.sh
+tags

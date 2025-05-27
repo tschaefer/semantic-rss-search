@@ -1,0 +1,8 @@
+db/
+/models/
+venv/
+__pycache__/
+setup.sh
+tags
+build/
+*.egg-info/
