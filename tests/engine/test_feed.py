@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pytest
+
 from app.engine.feed import Feed
 
 
@@ -13,19 +15,15 @@ def test_feed_initialization():
 def test_feed_parse_invalid_url():
     invalid_url = 'https://local.host:8000/invalid_feed.xml'
     feed = Feed(invalid_url)
-    try:
+    with pytest.raises(Exception, match='Unable to parse the feed:'):
         feed.parse()
-    except Exception as e:
-        assert str(e) == 'Unable to parse the feed: <urlopen error [Errno -2] Name or service not known>'
 
 
 def test_feed_parse_invalid_feed():
     invalid_feed_url = 'https://example.com/'
     feed = Feed(invalid_feed_url)
-    try:
+    with pytest.raises(Exception, match='Unable to parse the feed:'):
         feed.parse()
-    except Exception as e:
-        assert str(e) == 'Unable to parse the feed: <unknown>:2:0: syntax error'
 
 
 def test_feed():

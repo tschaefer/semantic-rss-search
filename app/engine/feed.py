@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import calendar
 import collections
 import feedparser
 import nltk
@@ -34,7 +35,7 @@ class Feed:
             title = entry.get('title', 'No title').replace('\n', ' ').strip()
             summary = entry.get('summary', 'No summary').replace('\n', ' ').strip()
 
-            published = time.mktime(entry.get('published_parsed', time.gmtime()))
+            published = time.mktime(entry['published_parsed']) if 'published_parsed' in entry else calendar.timegm(time.gmtime())
             link = entry.get('link', None)
 
             sentences = nltk.tokenize.sent_tokenize(self.__strip_html(title) + ' ' +

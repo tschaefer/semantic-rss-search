@@ -17,8 +17,8 @@ class Embeddings:
             cls._instance = super(Embeddings, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self, dbname='db/semantic_rss_search.db', dimension=384,
-                 model='sentence-transformers/all-MiniLM-L6-v2'):
+    def __init__(self, dbname='db/semantic_rss_search.db', dimension=768,
+                 model='BAAI/bge-base-en-v1.5'):
         if hasattr(self, 'initialized'):
             return
 
@@ -41,8 +41,14 @@ class Embeddings:
         return db
 
     def __vectorization(self, sentences):
-        vectors = self.transformer.encode(sentences)
-        return np.mean(vectors, axis=0).astype(np.float32)
+        return self.transformer.encode(' '.join(sentences)).astype(np.float32)
+
+    def __extract_keywords(self, query):
+        tokens = nltk.word_tokenize(query)
+        tagged = nltk.pos_tag(tokens)
+        keep_tags = {'NN', 'NNS', 'NNP', 'NNPS', 'JJ', 'JJR', 'JJS'}
+        keywords = [word for word, tag in tagged if tag in keep_tags]
+        return keywords if keywords else tokens
 
     def __init_db(self):
         with self.__connect_db() as db:
@@ -85,7 +91,8 @@ class Embeddings:
         return len(feed.entries)
 
     def search(self, query, k=5):
-        vector = self.__vectorization(nltk.tokenize.sent_tokenize(query))
+        keywords = self.__extract_keywords(query)
+        vector = self.__vectorization(keywords)
 
         with self.__connect_db() as db:
             cursor = db.execute('''

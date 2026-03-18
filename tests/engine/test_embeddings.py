@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import pytest
 import tests.support.utils as utils
 
 from app.engine.embeddings import Embeddings
@@ -14,13 +15,11 @@ def test_embeddings_upsert_dimension_not_match():
     utils.reset_embeddings()
 
     embeddings = Embeddings(dbname=dbname, dimension=256)
-    try:
-        url = 'https://sample-feeds.rowanmanning.com/examples/30493cdf1415a6cdc2f599c828d1b19c/feed.xml'
-        feed = Feed(url)
-        feed.parse()
+    url = 'https://sample-feeds.rowanmanning.com/examples/30493cdf1415a6cdc2f599c828d1b19c/feed.xml'
+    feed = Feed(url)
+    feed.parse()
+    with pytest.raises(Exception, match='Expected 256 dimensions but received 768'):
         embeddings.upsert(feed)
-    except Exception as e:
-        assert str(e).endswith('Expected 256 dimensions but received 384.')
 
     utils.reset_embeddings()
 
@@ -29,10 +28,8 @@ def test_embeddings_upsert_input_not_a_feed():
     utils.reset_embeddings()
 
     embeddings = Embeddings(dbname=dbname)
-    try:
+    with pytest.raises(AttributeError, match="'str' object has no attribute 'entries'"):
         embeddings.upsert('This is not a feed object')
-    except AttributeError as e:
-        assert str(e) == "'str' object has no attribute 'entries'"
 
     utils.reset_embeddings()
 
@@ -75,6 +72,6 @@ def test_embeddings_search():
     assert len(results) == 2
 
     key_fields = ['title', 'summary', 'published', 'link', 'distance', 'token']
-    results[0].keys() == key_fields
+    assert list(results[0].keys()) == key_fields
 
     utils.reset_embeddings()

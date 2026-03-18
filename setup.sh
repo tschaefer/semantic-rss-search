@@ -11,9 +11,9 @@ pip install --upgrade pip
 pip install --no-cache-dir setuptools wheel
 pip install --no-cache-dir bs4 "fastapi[standard]" feedparser numpy
 pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
-pip install --no-cache-dir nltk sentence_transformers sqlite_vec
+pip install --no-cache-dir nltk sentence_transformers sqlite_vec transformers
 
-python -W ignore -m nltk.downloader -d venv/nltk_data punkt_tab
+python -W ignore -m nltk.downloader -d venv/nltk_data punkt_tab averaged_perceptron_tagger_eng
 
 mkdir -p db/ models/
 

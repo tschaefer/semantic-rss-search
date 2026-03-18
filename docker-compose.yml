@@ -11,4 +11,6 @@ services:
     environment:
       - SEMANTIC_RSS_SEARCH_HOST=0.0.0.0
       - SEMANTIC_RSS_SEARCH_PORT=3000
+      # Required: set your API token for the /embed endpoint
+      - SEMANTIC_RSS_SEARCH_API_TOKEN=
     restart: unless-stopped

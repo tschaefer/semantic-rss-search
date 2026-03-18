@@ -27,8 +27,7 @@ content.
 - [**FastAPI**](https://fastapi.tiangolo.com): For building the API endpoints.
 - [**SQLite Vector**](https://alexgarcia.xyz/sqlite-vec/): For storing vector embeddings in a SQLite database.
 - [**Sentence Transformers**](https://www.sbert.net): For generating vector embeddings from text.
-- [**all-MiniLM-L6-v2**](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2): A pre-trained model for generating sentence
-  and paragraph embeddings for semantic search.
+- [**bge-base-en-v1.5**](https://huggingface.co/BAAI/bge-base-en-v1.5): A pre-trained model optimised for semantic search and passage retrieval (768-dimensional embeddings).
 
 ## Getting Started
 
@@ -71,7 +70,7 @@ Export the required environment variables.
 
 ```bash
 export SEMANTIC_RSS_SEARCH_API_TOKEN=your_token_here
-export NLTK_DATA_DIR=venv/nltk_data
+export NLTK_DATA=venv/nltk_data
 export HF_HOME=models
 ```
 

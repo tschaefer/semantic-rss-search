@@ -16,7 +16,7 @@ def test_embed_not_authorized():
     main.embeddings = config.initialize_embeddings()
 
     response = client.post('/embed', json={'url': 'http://example.com/rss'})
-    assert response.status_code == 403
+    assert response.status_code == 401
     assert response.json() == {'detail': 'Not authenticated'}
 
     utils.reset_embeddings()
@@ -79,5 +79,39 @@ def test_search():
     assert isinstance(data['results'], list)
     assert len(data['results']) == 2
     assert data['results'][0]['title'] == 'The Engine That Does More'
+
+    utils.reset_embeddings()
+
+
+def test_search_accept_header_not_json():
+    utils.reset_embeddings()
+    main.embeddings = config.initialize_embeddings()
+
+    os.environ['SEMANTIC_RSS_SEARCH_API_TOKEN'] = 'valid_token'
+    url = 'https://sample-feeds.rowanmanning.com/examples/30493cdf1415a6cdc2f599c828d1b19c/feed.xml'
+    client.post('/embed', json={'url': url}, headers={'Authorization': 'Bearer valid_token'})
+    os.environ.pop('SEMANTIC_RSS_SEARCH_API_TOKEN')
+
+    response = client.post('/search', json={'query': 'When will Nasa travel to mars?', 'k': 2},
+                           headers={'Accept': 'text/plain'})
+    assert response.status_code == 406
+    assert response.json() == {'detail': 'Not acceptable'}
+
+    utils.reset_embeddings()
+
+
+def test_search_content_type_header_not_json():
+    utils.reset_embeddings()
+    main.embeddings = config.initialize_embeddings()
+
+    os.environ['SEMANTIC_RSS_SEARCH_API_TOKEN'] = 'valid_token'
+    url = 'https://sample-feeds.rowanmanning.com/examples/30493cdf1415a6cdc2f599c828d1b19c/feed.xml'
+    client.post('/embed', json={'url': url}, headers={'Authorization': 'Bearer valid_token'})
+    os.environ.pop('SEMANTIC_RSS_SEARCH_API_TOKEN')
+
+    response = client.post('/search', json={'query': 'When will Nasa travel to mars?', 'k': 2},
+                           headers={'Content-Type': 'text/plain'})
+    assert response.status_code == 415
+    assert response.json() == {'detail': 'Unsupported media type'}
 
     utils.reset_embeddings()

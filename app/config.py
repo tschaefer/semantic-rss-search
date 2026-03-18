@@ -33,7 +33,6 @@ content.
 
 def create_info():
     return {
-        'docs_url': None,
         'title': 'Semantic RSS Search API',
         'summary': 'A Solid Semantic Search for RSS Feeds 🗞️.',
         'description': description,
